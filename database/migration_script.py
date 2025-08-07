@@ -5,7 +5,7 @@ import asyncio
 import aiosqlite
 import json
 from datetime import datetime
-from appwrite_manager import AppwriteManager
+from .appwrite_manager import AppwriteManager
 import config
 
 class DatabaseMigration:
