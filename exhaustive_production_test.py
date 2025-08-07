@@ -325,16 +325,12 @@ class ExhaustiveProductionTest:
                     voting_system = VotingSystem(game_id, self.db)
                     phase_manager = PhaseManager(game_id, self.db, self.game_manager.bot)
                     print(f"✅ Game systems instantiation: PASSED")
+                    print(f"✅ Game mechanics ({count} players): PASSED")
+                    self.passed_tests += 1
                 except Exception as e:
                     print(f"❌ Game systems instantiation: FAILED - {e}")
                     self.failed_tests.append(f"Game systems for {count} players: {e}")
                     continue
-                    
-                    print(f"✅ Game mechanics ({count} players): PASSED")
-                    self.passed_tests += 1
-                else:
-                    print(f"❌ Game creation failed for {count} players")
-                    self.failed_tests.append(f"Game creation: {count} players")
             
             return True
             
