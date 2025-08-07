@@ -67,23 +67,12 @@ class ItemHandler:
             brick_amount = int(item_won.split("_")[0])
             new_bricks += brick_amount
             
-            import aiosqlite
-            async with aiosqlite.connect(self.db.db_path) as db:
-                await db.execute(
-                    "UPDATE users SET bricks = ? WHERE telegram_id = ?",
-                    (new_bricks, user_id)
-                )
-                await db.commit()
+            await self.db.update_user_bricks(user_id, new_bricks)
         else:
             user.add_item(item_won)
             
-            import aiosqlite
-            async with aiosqlite.connect(self.db.db_path) as db:
-                await db.execute(
-                    "UPDATE users SET bricks = ?, items = ? WHERE telegram_id = ?",
-                    (new_bricks, user.items, user_id)
-                )
-                await db.commit()
+            await self.db.update_user_bricks(user_id, new_bricks)
+            await self.db.update_user_items(user_id, user.items)
         
         result_message = self.item_system.get_lucky_draw_message(item_won)
         
@@ -230,6 +219,6 @@ class ItemHandler:
         user = await self.db.get_user(user_id)
         
         if user:
-            from handlers.registration import RegistrationHandler
-            handler = RegistrationHandler(self.db)
+            from handlers.enhanced_registration import EnhancedRegistrationHandler
+            handler = EnhancedRegistrationHandler(self.db)
             await handler._show_main_menu(query, user)

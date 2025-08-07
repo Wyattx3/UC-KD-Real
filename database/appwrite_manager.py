@@ -432,6 +432,30 @@ class AppwriteManager:
         except AppwriteException as e:
             raise e
     
+    async def update_user_bricks(self, telegram_id: int, new_bricks: int):
+        """Update user bricks amount"""
+        try:
+            self.databases.update_document(
+                database_id=self.database_id,
+                collection_id=self.users_collection_id,
+                document_id=str(telegram_id),
+                data={'bricks': new_bricks}
+            )
+        except AppwriteException as e:
+            raise e
+    
+    async def update_user_items(self, telegram_id: int, items: str):
+        """Update user items string"""
+        try:
+            self.databases.update_document(
+                database_id=self.database_id,
+                collection_id=self.users_collection_id,
+                document_id=str(telegram_id),
+                data={'items': items}
+            )
+        except AppwriteException as e:
+            raise e
+    
     async def create_game(self, game_id: str, chat_id: int, creator_id: int) -> Game:
         """Create a new game in Appwrite"""
         try:

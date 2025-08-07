@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes, ConversationHandler
-from database.db_manager import DatabaseManager
+from database.appwrite_manager import AppwriteManager
 from utils.messages import UserMessages
 from utils.keyboards import UserKeyboards
 import config
@@ -9,7 +9,7 @@ import config
 WAITING_FOR_IGN = 1
 
 class RegistrationHandler:
-    def __init__(self, db_manager: DatabaseManager):
+    def __init__(self, db_manager: AppwriteManager):
         self.db = db_manager
         self.messages = UserMessages()
         self.keyboards = UserKeyboards()
