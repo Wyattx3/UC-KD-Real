@@ -82,8 +82,12 @@ class ItemSystem:
             game_data.setdefault("reflection_active", set()).add(player_id)
         elif item_id == "sigma_banana":
             game_data.setdefault("monkey_immune", set()).add(player_id)
+        elif item_id == "hecking_mask":
+            game_data.setdefault("hecking_mask_active", set()).add(player_id)
         elif item_id == "mystic_eyes_amulet":
             game_data.setdefault("investigation_immune", set()).add(player_id)
+        elif item_id == "transformation_wand":
+            game_data.setdefault("transformation_active", set()).add(player_id)
         elif item_id == "magic_gold_pot":
             game_data.setdefault("double_rewards", set()).add(player_id)
         
