@@ -6,7 +6,7 @@ from typing import Dict, List, Optional, Set
 from telegram import Bot
 from telegram.ext import Application
 
-from database.db_manager import DatabaseManager
+from database.appwrite_manager import AppwriteManager
 from database.models import Game, User
 from .role_distribution import assign_roles, get_team_for_role
 from .voting_system import VotingSystem
@@ -17,7 +17,7 @@ from utils.keyboards import GameKeyboards
 import config
 
 class GameManager:
-    def __init__(self, db_manager: DatabaseManager, bot: Bot):
+    def __init__(self, db_manager: AppwriteManager, bot: Bot):
         self.db = db_manager
         self.bot = bot
         self.active_games: Dict[str, Game] = {}

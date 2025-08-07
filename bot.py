@@ -6,9 +6,9 @@ from telegram.ext import (
     MessageHandler, ConversationHandler, filters
 )
 
-from database.db_manager import DatabaseManager
+from database.appwrite_manager import AppwriteManager
 from game.game_manager import GameManager
-from handlers.registration import RegistrationHandler, WAITING_FOR_IGN
+from handlers.enhanced_registration import EnhancedRegistrationHandler, WAITING_FOR_IGN
 from handlers.game_lobby import GameLobbyHandler
 from handlers.game_play import GamePlayHandler
 from handlers.items import ItemHandler
@@ -22,11 +22,11 @@ logger = logging.getLogger(__name__)
 
 class UCKingdomBot:
     def __init__(self):
-        self.db_manager = DatabaseManager()
+        self.db_manager = AppwriteManager(config.APPWRITE_API_KEY)
         self.application = Application.builder().token(config.BOT_TOKEN).build()
         self.game_manager = None
         
-        self.registration_handler = RegistrationHandler(self.db_manager)
+        self.registration_handler = EnhancedRegistrationHandler(self.db_manager)
         self.item_handler = ItemHandler(self.db_manager)
         self.game_lobby_handler = None
         self.game_play_handler = None
@@ -67,6 +67,12 @@ class UCKingdomBot:
         ))
         self.application.add_handler(CallbackQueryHandler(
             self.registration_handler.join_uc_era_callback, pattern="^join_uc_era$"
+        ))
+        self.application.add_handler(CallbackQueryHandler(
+            self.registration_handler.refresh_cooldown_callback, pattern="^refresh_cooldown$"
+        ))
+        self.application.add_handler(CallbackQueryHandler(
+            self.registration_handler.cancel_cooldown_callback, pattern="^cancel_cooldown$"
         ))
         
         self.application.add_handler(CallbackQueryHandler(

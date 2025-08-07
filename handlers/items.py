@@ -1,13 +1,13 @@
 import asyncio
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes
-from database.db_manager import DatabaseManager
+from database.appwrite_manager import AppwriteManager
 from game.items import ItemSystem
 from utils.messages import ItemMessages
 import config
 
 class ItemHandler:
-    def __init__(self, db_manager: DatabaseManager):
+    def __init__(self, db_manager: AppwriteManager):
         self.db = db_manager
         self.item_system = ItemSystem()
         self.messages = ItemMessages()

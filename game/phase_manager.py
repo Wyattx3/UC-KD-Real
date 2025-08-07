@@ -2,12 +2,13 @@ import asyncio
 import json
 from typing import Dict, List, Optional, Tuple
 from telegram import Bot
-from database.db_manager import DatabaseManager
+from database.appwrite_manager import AppwriteManager
 from roles.role_factory import RoleFactory
+from game.items import ItemSystem
 from utils.messages import GameMessages
 
 class PhaseManager:
-    def __init__(self, game_id: str, db_manager: DatabaseManager, bot: Bot):
+    def __init__(self, game_id: str, db_manager: AppwriteManager, bot: Bot):
         self.game_id = game_id
         self.db = db_manager
         self.bot = bot

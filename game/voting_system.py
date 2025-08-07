@@ -1,11 +1,11 @@
 import json
 from typing import Dict, List, Optional
 from telegram import Bot, InlineKeyboardButton, InlineKeyboardMarkup
-from database.db_manager import DatabaseManager
+from database.appwrite_manager import AppwriteManager
 from utils.messages import GameMessages
 
 class VotingSystem:
-    def __init__(self, game_id: str, db_manager: DatabaseManager):
+    def __init__(self, game_id: str, db_manager: AppwriteManager):
         self.game_id = game_id
         self.db = db_manager
         self.votes: Dict[int, int] = {}
