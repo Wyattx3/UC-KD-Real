@@ -43,8 +43,7 @@ class UCKingdomBot:
     def _setup_handlers(self):
         registration_conv = ConversationHandler(
             entry_points=[
-                CallbackQueryHandler(self.registration_handler.register_callback, pattern="^register$"),
-                CallbackQueryHandler(self.registration_handler.change_ign_callback, pattern="^change_ign$")
+                CallbackQueryHandler(self.registration_handler.register_callback, pattern="^register$")
             ],
             states={
                 WAITING_FOR_IGN: [
@@ -56,9 +55,27 @@ class UCKingdomBot:
             ]
         )
         
+        ign_change_conv = ConversationHandler(
+            entry_points=[
+                CallbackQueryHandler(self._start_ign_change_conversation, pattern="^start_ign_change$")
+            ],
+            states={
+                WAITING_FOR_IGN: [
+                    MessageHandler(filters.TEXT & ~filters.COMMAND, self._handle_ign_change_input)
+                ]
+            },
+            fallbacks=[
+                CommandHandler("cancel", self.registration_handler.cancel_conversation)
+            ]
+        )
+        
         self.application.add_handler(CommandHandler("start", self.registration_handler.start_command))
         self.application.add_handler(registration_conv)
+        self.application.add_handler(ign_change_conv)
         
+        self.application.add_handler(CallbackQueryHandler(
+            self.registration_handler.change_ign_callback, pattern="^change_ign$"
+        ))
         self.application.add_handler(CallbackQueryHandler(
             self.registration_handler.my_info_callback, pattern="^my_info$"
         ))
@@ -125,6 +142,20 @@ class UCKingdomBot:
             return await self.registration_handler.handle_ign_change(update, context)
         else:
             return await self.registration_handler.handle_ign_input(update, context)
+    
+    async def _start_ign_change_conversation(self, update: Update, context):
+        query = update.callback_query
+        await query.answer()
+        
+        await query.edit_message_text(
+            "Please enter your new In-Game Name (IGN):"
+        )
+        
+        context.user_data['changing_ign'] = True
+        return WAITING_FOR_IGN
+    
+    async def _handle_ign_change_input(self, update: Update, context):
+        return await self.registration_handler.handle_ign_change(update, context)
     
     async def _error_handler(self, update: Update, context):
         logger.error(f"Exception while handling an update: {context.error}")

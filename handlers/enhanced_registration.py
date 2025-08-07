@@ -114,11 +114,13 @@ class EnhancedRegistrationHandler:
             return
         
         await query.edit_message_text(
-            "Please enter your new In-Game Name (IGN):"
+            "✅ <b>IGN Change Available!</b>\n\n"
+            "You can now change your IGN. Click the button below to proceed.",
+            reply_markup=InlineKeyboardMarkup([[
+                InlineKeyboardButton("✏️ Change IGN", callback_data="start_ign_change")
+            ]]),
+            parse_mode='HTML'
         )
-        
-        context.user_data['changing_ign'] = True
-        return WAITING_FOR_IGN
     
     async def _start_countdown_display(self, query, user_id: int, initial_cooldown: dict):
         """Start real-time countdown display for IGN change cooldown"""
@@ -176,7 +178,7 @@ class EnhancedRegistrationHandler:
                 )
                 
                 keyboard = InlineKeyboardMarkup([[
-                    InlineKeyboardButton("✏️ Change IGN", callback_data="change_ign")
+                    InlineKeyboardButton("✏️ Change IGN", callback_data="start_ign_change")
                 ]])
                 
                 await query.bot.edit_message_text(
@@ -211,7 +213,7 @@ class EnhancedRegistrationHandler:
                 "✅ <b>IGN Change Available!</b>\n\n"
                 "You can now change your IGN. Click the button below to proceed.",
                 reply_markup=InlineKeyboardMarkup([[
-                    InlineKeyboardButton("✏️ Change IGN", callback_data="change_ign")
+                    InlineKeyboardButton("✏️ Change IGN", callback_data="start_ign_change")
                 ]]),
                 parse_mode='HTML'
             )
