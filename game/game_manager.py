@@ -11,6 +11,7 @@ from database.models import Game, User
 from .role_distribution import assign_roles, get_team_for_role
 from .voting_system import VotingSystem
 from .phase_manager import PhaseManager
+from .performance_system import PerformanceSystem
 from utils.messages import GameMessages
 from utils.keyboards import GameKeyboards
 import config
@@ -22,6 +23,7 @@ class GameManager:
         self.active_games: Dict[str, Game] = {}
         self.voting_systems: Dict[str, VotingSystem] = {}
         self.phase_managers: Dict[str, PhaseManager] = {}
+        self.performance_system = PerformanceSystem()
         self.messages = GameMessages()
         self.keyboards = GameKeyboards()
     
@@ -178,6 +180,18 @@ class GameManager:
         game.current_phase = "voting"
         await self.db.update_game(game)
         
+        if game.current_round == 6:
+            warning_message = (
+                "⚠️ <b>The situation is dire!</b>\n\n"
+                "Some beasts still roam. If they are not found within the next two nights, "
+                "the entire village will be lost!"
+            )
+            await self.bot.send_message(
+                chat_id=game.chat_id,
+                text=warning_message,
+                parse_mode='HTML'
+            )
+        
         voting_system = self.voting_systems.get(game_id)
         if voting_system:
             await voting_system.start_voting(game.chat_id, self.bot)
@@ -192,7 +206,7 @@ class GameManager:
             return
         
         if game.current_round >= config.MAX_ROUNDS:
-            await self.end_game(game_id, "predator", "Round limit reached")
+            await self.end_game(game_id, "predator", "Round limit reached - Village lost!")
             return
         
         await self.start_night_phase(game_id)
@@ -257,7 +271,7 @@ class GameManager:
             parse_mode='HTML'
         )
         
-        await self._distribute_rewards(game_id, winning_team)
+        await self._distribute_rewards_with_performance(game_id, winning_team)
         
         if game_id in self.active_games:
             del self.active_games[game_id]
@@ -266,20 +280,43 @@ class GameManager:
         if game_id in self.phase_managers:
             del self.phase_managers[game_id]
     
-    async def _distribute_rewards(self, game_id: str, winning_team: str):
+    async def _distribute_rewards_with_performance(self, game_id: str, winning_team: str):
         game = self.active_games[game_id]
         players = game.get_players_list()
         roles = game.get_roles_dict()
+        eliminated = game.get_eliminated_players()
+        night_actions = game.get_night_actions_dict()
+        votes = game.get_votes_dict()
+        
+        performance_results = {}
+        users = {}
         
         for player_id in players:
             role = roles.get(player_id)
-            player_team = get_team_for_role(role)
+            user = await self.db.get_user(player_id)
+            users[player_id] = user
             
+            stars, bricks = self.performance_system.calculate_performance_score(
+                game, player_id, role, eliminated, winning_team, night_actions, votes
+            )
+            
+            performance_results[player_id] = (stars, bricks)
+            
+            player_team = get_team_for_role(role)
             won = (winning_team == "villager" and player_team == "villager") or \
                   (winning_team == "predator" and player_team in ["predator", "predator_aligned"])
             
-            bricks_earned = 40 if won else 10
-            await self.db.update_user_stats(player_id, won, bricks_earned)
+            await self.db.update_user_stats(player_id, won, bricks)
+        
+        if len(players) >= 15:
+            performance_message = self.performance_system.format_performance_results(
+                performance_results, users, roles, winning_team
+            )
+            await self.bot.send_message(
+                chat_id=game.chat_id,
+                text=performance_message,
+                parse_mode='HTML'
+            )
     
     def get_game_status(self, game_id: str) -> Optional[Dict]:
         if game_id not in self.active_games:

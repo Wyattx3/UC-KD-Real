@@ -77,7 +77,7 @@ class FinalTest:
             return False
     
     def test_item_system(self):
-        """Test all 7 items"""
+        """Test all 7 items plus brick rewards"""
         print("\n🎒 Testing Item System...")
         
         all_items = ["immortality_pill", "reflection_mirror", "sigma_banana", "hecking_mask", "mystic_eyes_amulet", "transformation_wand", "magic_gold_pot"]
@@ -93,12 +93,14 @@ class FinalTest:
                 print(f"  ✅ {item_info['emoji']} {item_info['name']}: Effect applied")
             
             items_drawn = []
-            for i in range(20):
+            for i in range(50):
                 item = self.item_system.perform_lucky_draw()
                 items_drawn.append(item)
             
             unique_items = len(set(items_drawn))
-            print(f"✅ Lucky draw: {unique_items} unique items from 20 draws")
+            brick_rewards = [item for item in items_drawn if "bricks" in item]
+            print(f"✅ Lucky draw: {unique_items} unique items from 50 draws")
+            print(f"✅ Brick rewards: {len(brick_rewards)} brick rewards drawn")
             
             return True
         except Exception as e:

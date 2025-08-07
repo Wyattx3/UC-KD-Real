@@ -59,25 +59,25 @@ class GameMessages:
         role_info = f"🎭 <b>Your Role:</b> {emoji} {role_name}\n\n"
         
         descriptions = {
-            "lion": "Leader of the good animals. Immune to first predator attack (except Crocodile/Hunter).",
-            "leopard": "Leader of the Jackal pack. Fast and decisive. Choose nightly targets.",
-            "tiger": "Intelligent second-in-command. Becomes active if Leopard dies.",
-            "jackal": "Pack hunter loyal to Leopard/Tiger. Carries out kill orders.",
-            "fox": "Cunning and deceptive. Win by being eliminated by villagers.",
-            "turtle": "Slow and defensive. Hard shell protects from first attack.",
-            "vulture": "Scavenger sided with predators. Can sacrifice for the pack.",
-            "monkey": "Intelligent and talkative. Role-block players with chatter.",
-            "owl": "Wise nocturnal healer. Protect players each night.",
-            "crocodile": "Ambush predator. Only one who can injure Lion first.",
-            "deer": "Grazer. Visit locations to witness events.",
-            "giraffe": "Grazer. Visit locations to witness events.",
-            "buffalo": "Grazer. Visit locations to witness events.",
-            "cow": "Grazer. Visit locations to witness events.",
-            "sheep": "Grazer. Visit locations to witness events.",
-            "bat": "Uses echolocation. Identify attackers but lose cave.",
-            "hedgehog": "Spiny defender. Mutual destruction with attackers.",
-            "wild_boar": "Aggressive territorial. Block locations and attack.",
-            "hunter": "Last uninfected human. Investigate or kill each night."
+            "lion": "🦁 Leader of the good animals. Immune to first predator attack (except Crocodile/Hunter). Your roar commands respect and your courage inspires others.",
+            "leopard": "🐆 Leader of the Jackal pack. Fast and decisive. Choose nightly targets. Your stealth and cunning make you a deadly predator.",
+            "tiger": "🐅 Intelligent second-in-command. Becomes active if Leopard dies. Your strength and wisdom guide the pack when leadership is needed.",
+            "jackal": "🐺 Pack hunter loyal to Leopard/Tiger. Carries out kill orders. Your loyalty to the pack is absolute, and your hunting skills are unmatched.",
+            "fox": "🦊 Cunning and deceptive. Win by being eliminated by villagers. Your wit and trickery are your greatest weapons.",
+            "turtle": "🐢 Slow and defensive. Hard shell protects from first attack. Your patience and natural armor keep you safe from harm.",
+            "vulture": "🦅 Scavenger sided with predators. Can sacrifice for the pack. Your keen eyes see all, and your loyalty to darkness runs deep.",
+            "monkey": "🐒 Intelligent and talkative. Role-block players with chatter. Your endless chatter and mischief can disrupt even the best-laid plans.",
+            "owl": "🦉 Wise nocturnal healer. Protect players each night. Your wisdom and healing powers can save lives in the darkness.",
+            "crocodile": "🐊 Ambush predator. Only one who can injure Lion first. Your powerful jaws and stealth make you the apex predator.",
+            "deer": "🦌 Grazer. Visit locations to witness events. Your gentle nature and keen senses help you observe the night's activities.",
+            "giraffe": "🦒 Grazer. Visit locations to witness events. Your height gives you a unique perspective on the village's happenings.",
+            "buffalo": "🐃 Grazer. Visit locations to witness events. Your strength and herd instincts help protect the innocent.",
+            "cow": "🐄 Grazer. Visit locations to witness events. Your peaceful nature belies your importance to the village's survival.",
+            "sheep": "🐑 Grazer. Visit locations to witness events. Your flock mentality helps you stay safe while gathering information.",
+            "bat": "🦇 Uses echolocation. Identify attackers but lose cave. Your night vision reveals secrets others cannot see.",
+            "hedgehog": "🦔 Spiny defender. Mutual destruction with attackers. Your spines are your shield and your weapon.",
+            "wild_boar": "🐗 Aggressive territorial. Block locations and attack. Your fierce nature and territorial instincts make you a formidable opponent.",
+            "hunter": "🏹 Last uninfected human. Investigate or kill each night. You are humanity's last hope against the curse."
         }
         
         description = descriptions.get(role, "A mysterious role with unknown abilities.")
@@ -97,14 +97,16 @@ class GameMessages:
         return (
             "🌅 <b>The night is young...</b>\n\n"
             f"You have {config.INITIAL_DISCUSSION_TIME} seconds to talk before darkness falls. "
-            "Use this time to introduce yourselves and discuss strategy!"
+            "Use this time to introduce yourselves and discuss strategy!\n\n"
+            "💡 <i>Tip: Share your suspicions, form alliances, but be careful who you trust!</i>"
         )
     
     def get_night_phase_message(self) -> str:
         return (
             "🌃 <b>Night falls...</b>\n\n"
             "All villagers seek shelter. Those with night duties, check your PMs for instructions.\n\n"
-            "🔇 <i>The chat falls silent as the creatures of the night begin their work...</i>"
+            "🔇 <i>The chat falls silent as the creatures of the night begin their work...</i>\n\n"
+            "⏰ <i>Night actions are being processed...</i>"
         )
     
     def get_day_discussion_message(self) -> str:
@@ -117,7 +119,8 @@ class GameMessages:
         return (
             "⚖️ <b>Time to vote!</b>\n\n"
             f"Who is suspicious? You have {config.VOTING_TIME} seconds to cast your vote.\n\n"
-            "⚠️ <i>Votes cannot be changed once cast!</i>"
+            "⚠️ <i>Votes cannot be changed once cast!</i>\n\n"
+            "🗳️ <i>Choose wisely - the fate of the village depends on your decision!</i>"
         )
     
     def get_death_announcements(self, deaths: List[Tuple[int, str, str]]) -> str:
@@ -168,5 +171,40 @@ class ItemMessages:
             "🎰 <b>Lucky Draw</b>\n\n"
             "🎁 Cost: 1000 Bricks\n"
             "✨ Possible rewards include powerful items and bonus bricks!\n\n"
+            "🍀 Items available:\n"
+            "• 💊 Immortality Pill (13%)\n"
+            "• 🪞 Reflection Mirror (8%)\n"
+            "• 🍌 Sigma Banana (15%)\n"
+            "• 🎭 Hecking Mask (12%)\n"
+            "• 🪬 Mystic Eyes Amulet (9%)\n"
+            "• 🪄 Transformation Wand (5%)\n"
+            "• 🏺 Magic Gold Pot (x2) (8%)\n"
+            "• 🧱 900 Bricks (15%)\n"
+            "• 🧱 800 Bricks (10%)\n"
+            "• 🧱 700 Bricks (5%)\n\n"
             "Are you feeling lucky?"
         )
+    
+    def get_item_usage_night_one(self, items: List[str]) -> str:
+        message = (
+            "🎒 <b>Item Usage - Night 1</b>\n\n"
+            "Do you wish to use an item from your inventory for this game?\n\n"
+            "Your items:\n"
+        )
+        
+        item_descriptions = {
+            "immortality_pill": "💊 Immortality Pill - မသေဆေးဓာတ်လုံး - Survive one elimination attempt",
+            "reflection_mirror": "🪞 Reflection Mirror - တန်ပြန်မှော်မှန် - Reflect attacks back to attacker",
+            "sigma_banana": "🍌 Sigma Banana - ငှက်ပျောသီး - Immunity to Monkey role-blocking",
+            "hecking_mask": "🎭 Hecking Mask - ငတက်ပြား - Use target's night ability instead of your own",
+            "mystic_eyes_amulet": "🪬 Mystic Eyes Amulet - ပဥ္စလက်မျက်လုံး - Appear as generic villager to investigations",
+            "transformation_wand": "🪄 Transformation Wand - အသွင်းပြောင်းတောင်ဝှေ့ - Swap roles with target for one night",
+            "magic_gold_pot": "🏺 Magic Gold Pot (x2) - မှော်ဝင်ရွှေအိုး - Double rank stars and bricks if team wins"
+        }
+        
+        for item_id in items:
+            description = item_descriptions.get(item_id, f"• {item_id}")
+            message += f"{description}\n"
+        
+        message += "\nReply with the item name to use it, or 'none' to skip."
+        return message

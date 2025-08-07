@@ -12,6 +12,7 @@ class PhaseManager:
         self.db = db_manager
         self.bot = bot
         self.role_factory = RoleFactory()
+        self.item_system = ItemSystem()
         self.messages = GameMessages()
         self.night_actions: Dict[int, str] = {}
     
@@ -129,3 +130,34 @@ class PhaseManager:
     
     def has_submitted_action(self, player_id: int) -> bool:
         return player_id in self.night_actions
+    
+    async def _send_item_usage_prompts(self, roles: Dict[int, str], eliminated: List[int]):
+        """Send item usage prompts on Night 1"""
+        for player_id in roles.keys():
+            if player_id in eliminated:
+                continue
+            
+            user = await self.db.get_user(player_id)
+            if user and user.items:
+                try:
+                    items = json.loads(user.items)
+                    if items:
+                        message = (
+                            "🎒 <b>Item Usage - Night 1</b>\n\n"
+                            "Do you wish to use an item from your inventory for this game?\n\n"
+                            "Your items:\n"
+                        )
+                        for item_id in items:
+                            item_info = self.item_system.get_item_info(item_id)
+                            if item_info:
+                                message += f"• {item_info['emoji']} {item_info['name']}\n"
+                        
+                        message += "\nReply with the item name to use it, or 'none' to skip."
+                        
+                        await self.bot.send_message(
+                            chat_id=player_id,
+                            text=message,
+                            parse_mode='HTML'
+                        )
+                except Exception as e:
+                    print(f"Error sending item prompt to {player_id}: {e}")
